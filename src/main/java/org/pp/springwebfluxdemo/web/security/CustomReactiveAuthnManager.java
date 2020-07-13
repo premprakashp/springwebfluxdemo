@@ -3,8 +3,10 @@ package org.pp.springwebfluxdemo.web.security;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.pp.springwebfluxdemo.web.model.AppUser;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -34,6 +36,7 @@ public class CustomReactiveAuthnManager implements ReactiveAuthenticationManager
                 }
             }
         }
-        return Mono.empty();
+        throw new BadCredentialsException("Invalid token"); // returns 401
+        //return Mono.just(new CustomAuthn(null, null, false)); // returns 403
     }
 }
