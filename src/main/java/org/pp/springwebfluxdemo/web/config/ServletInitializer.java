@@ -1,5 +1,6 @@
-package org.pp.springwebfluxdemo;
+package org.pp.springwebfluxdemo.web.config;
 
+import org.pp.springwebfluxdemo.web.SpringwebfluxdemoApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
