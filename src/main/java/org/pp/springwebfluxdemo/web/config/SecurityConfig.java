@@ -26,6 +26,8 @@ public class SecurityConfig {
                 exchanges
                         .pathMatchers(HttpMethod.POST, "/v1/app/user").hasRole("ADMIN")
                         .pathMatchers(HttpMethod.GET, "/v1/app/users").hasAnyRole("ADMIN", "USER")
+                        .pathMatchers(HttpMethod.GET, "/docs/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
                         .pathMatchers("/**").denyAll()
                         .anyExchange().denyAll())
                 .csrf().disable()

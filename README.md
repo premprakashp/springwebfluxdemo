@@ -21,7 +21,7 @@ This dummy token validation can be replaced with a real token validation logic.
 
 ```bash
 curl --request GET \
-  --url http://localhost:8080/v1/app/users \
+  --url http://localhost:8181/server/v1/app/users \
   --header 'authntoken: usertoken'
 ```
 Output
@@ -43,7 +43,7 @@ Output
 
 ```bash
 curl --request POST \
-  --url http://localhost:8080/v1/app/user \
+  --url http://localhost:8181/server/v1/app/user \
   --header 'authntoken: admintoken' \
   --header 'content-type: application/json' \
   --data '{
@@ -65,7 +65,7 @@ Output
 
 ```bash
 curl --request POST \
-  --url http://localhost:8080/v1/app/user \
+  --url http://localhost:8181/server/v1/app/user \
   --header 'authntoken: usertoken' \
   --header 'content-type: application/json' \
   --data '{
