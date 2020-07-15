@@ -2,6 +2,10 @@ package org.pp.springwebfluxdemo.web.config;
 
 import org.pp.springwebfluxdemo.web.security.*;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -17,7 +21,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(
             ServerHttpSecurity http,
             ServerCodecConfigurer serverCodecConfigurer) {
-        return http.addFilterAt(new CustomAuthnSecurityFilter(authenticationManager(), serverCodecConfigurer),
+        return http.addFilterAt(new CustomAuthnSecurityFilter(authenticationManager(), serverCodecConfigurer, reactiveRedisTemplateString()),
                 SecurityWebFiltersOrder.AUTHENTICATION)
                 .addFilterAfter(docsRedirectFilter(), SecurityWebFiltersOrder.HTTPS_REDIRECT)
                 .authorizeExchange(exchanges ->
@@ -57,5 +61,15 @@ public class SecurityConfig {
     @Bean
     public DocsRedirectFilter docsRedirectFilter(){
         return new DocsRedirectFilter();
+    }
+
+    @Bean
+    public ReactiveRedisConnectionFactory reactiveRedisConnectionFactory() {
+        return new LettuceConnectionFactory("localhost", 6379);
+    }
+
+    @Bean
+    public ReactiveRedisTemplate<String, String> reactiveRedisTemplateString() {
+        return new ReactiveRedisTemplate<>(reactiveRedisConnectionFactory(), RedisSerializationContext.string());
     }
 }

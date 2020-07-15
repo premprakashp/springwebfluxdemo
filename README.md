@@ -6,6 +6,12 @@ Includes reactive drivers for H2 and Redis to complete the reactive end to end f
 
 Service to service calls  uses non blocking Spring Webclient instead of RestTemplate
 
+## Start redis docker image
+
+```bash
+docker run -d --restart=always --name redis -p 6379:6379 redis
+```
+
 ## Custom security token
 
 Demo includes validating a custom security token from header with
