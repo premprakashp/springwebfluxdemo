@@ -1,9 +1,6 @@
 package org.pp.springwebfluxdemo.web.config;
 
-import org.pp.springwebfluxdemo.web.security.CustomAuthnSecurityFilter;
-import org.pp.springwebfluxdemo.web.security.CustomReactiveAuthnManager;
-import org.pp.springwebfluxdemo.web.security.RestAccessDeniedHandler;
-import org.pp.springwebfluxdemo.web.security.RestAuthnEntryPoint;
+import org.pp.springwebfluxdemo.web.security.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -22,13 +19,15 @@ public class SecurityConfig {
             ServerCodecConfigurer serverCodecConfigurer) {
         return http.addFilterAt(new CustomAuthnSecurityFilter(authenticationManager(), serverCodecConfigurer),
                 SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterAfter(docsRedirectFilter(), SecurityWebFiltersOrder.HTTPS_REDIRECT)
                 .authorizeExchange(exchanges ->
                 exchanges
                         .pathMatchers(HttpMethod.POST, "/v1/app/user").hasRole("ADMIN")
                         .pathMatchers(HttpMethod.GET, "/v1/app/users").hasAnyRole("ADMIN", "USER")
                         .pathMatchers(HttpMethod.GET, "/docs/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/docs**").permitAll()
                         .pathMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
-                        .pathMatchers("/**").denyAll()
+                        .pathMatchers("/**").permitAll()
                         .anyExchange().denyAll())
                 .csrf().disable()
                 .httpBasic().disable()
@@ -42,8 +41,7 @@ public class SecurityConfig {
 
     @Bean
     public CustomReactiveAuthnManager authenticationManager() {
-        CustomReactiveAuthnManager manager = new CustomReactiveAuthnManager();
-        return manager;
+        return new CustomReactiveAuthnManager();
     }
 
     @Bean
@@ -54,5 +52,10 @@ public class SecurityConfig {
     @Bean
     public RestAuthnEntryPoint authnEntryPoint(){
         return new RestAuthnEntryPoint();
+    }
+
+    @Bean
+    public DocsRedirectFilter docsRedirectFilter(){
+        return new DocsRedirectFilter();
     }
 }
